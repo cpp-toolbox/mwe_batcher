@@ -13,3 +13,12 @@
 [submodule "assets/shaders"]
 	path = assets/shaders
 	url = git@github.com:cpp-toolbox/shaders.git
+[submodule "src/batcher"]
+	path = src/batcher
+	url = git@github.com:cpp-toolbox/batcher.git
+[submodule "src/vertex_geometry"]
+	path = src/vertex_geometry
+	url = git@github.com:cpp-toolbox/vertex_geometry.git
+[submodule "src/shader_standard"]
+	path = src/shader_standard
+	url = git@github.com:cpp-toolbox/shader_standard.git
