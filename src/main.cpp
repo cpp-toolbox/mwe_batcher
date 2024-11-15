@@ -3,6 +3,7 @@
 #include "window/window.hpp"
 #include "shader_cache/shader_cache.hpp"
 #include "batcher/generated/batcher.hpp"
+#include "vertex_geometry/vertex_geometry.hpp"
 
 #include <cstdio>
 #include <cstdlib>
@@ -16,32 +17,6 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
-
-struct OpenGLDrawingData {
-    GLuint vbo_name;
-    GLuint ibo_name;
-    GLuint vao_name;
-};
-
-std::vector<glm::vec3> vertices_left = {
-    glm::vec3(-0.8f, 0.5f, 0.0f),  // top right of left square
-    glm::vec3(-0.8f, -0.5f, 0.0f), // bottom right of left square
-    glm::vec3(-0.4f, -0.5f, 0.0f), // bottom left of left square
-    glm::vec3(-0.4f, 0.5f, 0.0f)   // top left of left square
-};
-
-std::vector<glm::vec3> vertices_right = {
-    glm::vec3(0.4f, 0.5f, 0.0f),  // top right of right square
-    glm::vec3(0.4f, -0.5f, 0.0f), // bottom right of right square
-    glm::vec3(0.8f, -0.5f, 0.0f), // bottom left of right square
-    glm::vec3(0.8f, 0.5f, 0.0f)   // top left of right square
-};
-
-std::vector<unsigned int> indices = {
-    // note that we start from 0!
-    0, 1, 3, // first Triangle
-    1, 2, 3  // second Triangle
-};
 
 int main() {
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
@@ -64,6 +39,8 @@ int main() {
     glm::vec4 color = glm::vec4(.5, .5, .5, 1);
     shader_cache.set_uniform(ShaderType::ABSOLUTE_POSITION_WITH_SOLID_COLOR, ShaderUniformVariable::RGBA_COLOR, color);
 
+    IndexedVertices ivp = generate_grid(glm::vec3(0, 0, 0), 2, 2, 2, 2, 0.01);
+
     while (!glfwWindowShouldClose(window)) {
 
         glfwGetFramebufferSize(window, &width, &height);
@@ -72,8 +49,7 @@ int main() {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        batcher.absolute_position_with_solid_color_shader_batcher.queue_draw(indices, vertices_left);
-        batcher.absolute_position_with_solid_color_shader_batcher.queue_draw(indices, vertices_right);
+        batcher.absolute_position_with_solid_color_shader_batcher.queue_draw(ivp.indices, ivp.vertices);
         batcher.absolute_position_with_solid_color_shader_batcher.draw_everything();
 
         glfwSwapBuffers(window);
