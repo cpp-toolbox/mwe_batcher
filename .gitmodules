@@ -28,3 +28,6 @@
 [submodule "src/graphics/transform"]
 	path = src/graphics/transform
 	url = git@github.com:cpp-toolbox/transform.git
+[submodule "src/utility/unique_id_generator"]
+	path = src/utility/unique_id_generator
+	url = git@github.com:cpp-toolbox/unique_id_generator.git
